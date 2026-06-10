@@ -179,7 +179,7 @@ default_limits = {
     "Rice": 2
 }
 
-allocation_map = {
+base_allocation_map = {
     "Bread/Bakery: Bread, Biscuits, Rolls, Batter, Tortillas, Pie Crusts": 0.05,
     "Cereal:  Hot and Cold": 0.10,
     "Complete Meal/Entree, Soup": 0.15,
@@ -193,11 +193,6 @@ allocation_map = {
     "Vegetables - Canned & Frozen": 0.15
 }
 
-locked_categories = [
-    "Bread/Bakery: Bread, Biscuits, Rolls, Batter, Tortillas, Pie Crusts",
-    "Dairy: Yogurt, Cheese, Milk, Butter, Sour cream Ice Cream"
-]
-
 user_limits = {}
 
 # Layout adjustment columns
@@ -206,24 +201,50 @@ col_limits, col_targets = st.columns([2, 1])
 with col_limits:
     st.write("**Editable Variety Adjustments**")
     for cat, default_val in default_limits.items():
-        is_disabled = cat in locked_categories
         short_label = cat.split(':')[0].split('-')[0].strip()
+        # All limits are now fully unlocked and editable
         user_limits[cat] = st.number_input(
             f"{short_label} Limit", 
             min_value=1, 
             max_value=20, 
             value=default_val, 
-            disabled=is_disabled,
+            disabled=False,
             help=cat,
             key=f"input_{short_label}"
         )
 
 with col_targets:
-    st.write("**MyPlate Target Distributions (Fixed)**")
-    target_df = pd.DataFrame(list(allocation_map.items()), columns=['Category', 'Target %'])
-    target_df['Target %'] = (target_df['Target %'] * 100).astype(str) + "%"
-    target_df['Category'] = target_df['Category'].apply(lambda x: x.split(':')[0].split('-')[0].strip())
-    st.dataframe(target_df, hide_index=True, use_container_width=True)
+    st.write("**MyPlate Target Distributions (Editable)**")
+    
+    # Initialize editable targets framework inside session state for stability
+    if 'target_df_init' not in st.session_state:
+        init_data = []
+        for full_cat, pct in base_allocation_map.items():
+            short_label = full_cat.split(':')[0].split('-')[0].strip()
+            init_data.append({
+                "Full_Category": full_cat,
+                "Category": short_label,
+                "Target %": round(pct * 100, 2)  # Resolves float precision anomaly (e.g. 7.000000000000001%)
+            })
+        st.session_state['target_df_init'] = pd.DataFrame(init_data)
+        
+    # Render table as an editable data frame
+    edited_target_df = st.data_editor(
+        st.session_state['target_df_init'],
+        column_config={
+            "Full_Category": None,  # Keep full category text hidden from frontend view
+            "Category": st.column_config.TextColumn("Category", disabled=True),
+            "Target %": st.column_config.NumberColumn("Target %", min_value=0.0, max_value=100.0, step=0.5, format="%.2f%%")
+        },
+        hide_index=True,
+        use_container_width=True,
+        key="target_editor"
+    )
+    
+    # Build dynamic allocation map mapped directly back to optimization engine formulas
+    dynamic_allocation_map = {
+        row['Full_Category']: row['Target %'] / 100.0 for _, row in edited_target_df.iterrows()
+    }
 
 st.markdown("---")
 st.subheader("2. Define Total Weight Target & Execute File")
@@ -279,8 +300,8 @@ if reviewed_file:
                 
                 allocated_rows = []
 
-                # PASS 1: TARGET ALIGNMENT
-                for category, pct in allocation_map.items():
+                # PASS 1: TARGET ALIGNMENT (Now using dynamic_allocation_map inputs)
+                for category, pct in dynamic_allocation_map.items():
                     cat_goal_wt = final_weight_target * pct
                     cat_exp = expiring_items[expiring_items[fbc_col] == category].copy()
                     cat_norm = normal_items[normal_items[fbc_col] == category].copy()

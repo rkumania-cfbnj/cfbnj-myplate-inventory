@@ -30,8 +30,7 @@ def remove_duplicates(df, fbc_col, desc_col, qty_col):
 # STEP 1: INVENTORY CLEANING
 # ==========================================
 st.header("Step 1: Upload Allocation Plan Excel Extract file from CERES, but please remove headers and footers from the excel")
-raw_file = st.file_uploader("Before uploading the Excel please remove the top 2 rows and bottom 2 rows, as they are not part of the requested data. Then upload the Excel file below.
-", type=["xlsx", "xls"], key="raw_upload")
+raw_file = st.file_uploader("Before uploading the Excel please remove the top 2 rows and bottom 2 rows, as they are not part of the requested data. Then upload the Excel file below.", type=["xlsx", "xls"], key="raw_upload")
 
 if raw_file:
     # Reset processing state if a brand new file is uploaded

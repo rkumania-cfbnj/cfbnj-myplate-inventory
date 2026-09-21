@@ -377,7 +377,7 @@ if reviewed_file:
 
     # Display results if processing cache is active for Step 2
     if st.session_state.get('step2_processed', False):
-        st.success(f"Allocation Complete! Final Expected Weight: **{st.session_state['final_weight']:,.0f} lbs** (Target: {final_weight_target:,.0f} lbs) **The final allocation may be below the target based on available inventory and the selected variety rules**")
+        st.success(f"Allocation Complete! Final Expected Weight: **{st.session_state['final_weight']:,.0f} lbs** (Target: {final_weight_target:,.0f} lbs) **The final allocation may be below the target based on available inventory and the selected variety numbers**")
         st.download_button(
             label=f"🌟 Download Final Myplate Inventory for Allocation: {st.session_state['saved_final_name']}", 
             data=st.session_state['buffer_final'], 

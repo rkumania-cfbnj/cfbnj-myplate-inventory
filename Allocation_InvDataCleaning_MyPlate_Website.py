@@ -137,7 +137,7 @@ if raw_file:
 
     # Display results if processing cache is active
     if st.session_state.get('step1_processed', False):
-        st.success("**Initial processing completed!** Please download both Excel files and review the **Product Type categories, the items under each category, and any items tagged as expiring in 90 days**. Once your review is complete, move to **Step 2**. As a best practice, keep the reviewed Excel file open side-by-side with this website so you can easily enter the required numbers.")
+        st.success("**Initial processing completed!** Please download both Excel files and review the Product Type categories, the items under each category, and **any items tagged as expiring in 90 days**. Once your review is complete, move to **Step 2**. Keep the reviewed Excel file open side-by-side with this website to easily enter the variety limits and total allocation weight.")
         col_dl1, col_dl2 = st.columns(2)
         with col_dl1:
             st.download_button(
@@ -162,7 +162,7 @@ st.markdown("---")
 st.header("Step 2: Configure Product Type Variety & Total Allocation (lbs) in the fields below. Then upload the manually reviewed Main Inventory Excel file from Step 1 at the bottom of the page.")
 st.info("Review or adjust each Product type variety limits and total allocation lbs by simply entering **number greater then 0 in each box below**. Best Practice is to **open excel side by side** to this website so you can see number of items in each product type")
 
-st.subheader("A. Set Product Type Variety Limits below")
+st.subheader("A. Set the number of item varieties you want for each Product Type. Enter the number directly or use the + / − buttons")
 
 # Define Default Parameters
 default_limits = {
@@ -199,7 +199,7 @@ user_limits = {}
 col_limits, col_targets = st.columns([2, 1])
 
 with col_limits:
-    st.write("**Editable Product Variety simply enter number or click + or - on right side**")
+    st.write("**💡 Important Note: Items expiring within 90 days are automatically added to the variety count. Your number below represents the additional varieties to select, not the final total.**")
     for cat, default_val in default_limits.items():
         short_label = cat.split(':')[0].split('-')[0].strip()
         # All limits are now fully unlocked and editable
@@ -377,7 +377,7 @@ if reviewed_file:
 
     # Display results if processing cache is active for Step 2
     if st.session_state.get('step2_processed', False):
-        st.success(f"Allocation Complete! Final Expected Weight: **{st.session_state['final_weight']:,.0f} lbs** (Target: {final_weight_target:,.0f} lbs)")
+        st.success(f"Allocation Complete! Final Expected Weight: **{st.session_state['final_weight']:,.0f} lbs** (Target: {final_weight_target:,.0f} lbs) **The final allocation may be below the target based on available inventory and the selected variety rules**")
         st.download_button(
             label=f"🌟 Download Final Myplate Inventory for Allocation: {st.session_state['saved_final_name']}", 
             data=st.session_state['buffer_final'], 

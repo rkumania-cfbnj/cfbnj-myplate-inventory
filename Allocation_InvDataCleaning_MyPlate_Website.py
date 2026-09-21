@@ -40,7 +40,7 @@ if raw_file:
         st.session_state['buffer_main'] = None
         st.session_state['buffer_soup'] = None
 
-    st.subheader("📁 Name Your Processed Excel Files")
+    st.subheader("📁 Name Your Processed Excel Files below")
     col_name1, col_name2 = st.columns(2)
     
     with col_name1:
@@ -51,7 +51,7 @@ if raw_file:
         )
     with col_name2:
         custom_soup_name = st.text_input(
-            "Soup Kitchen Review Inventory Excel Filename:", 
+            "Soup Kitchen Items Review Inventory Excel Filename:", 
             value="MAY_SoupKitchen_Inventory",
             help="Type your preferred name for the soup kitchen file (Extension will be added automatically)"
         )
@@ -63,7 +63,7 @@ if raw_file:
         custom_soup_name += ".xlsx"
 
     # Action button to trigger processing explicitly
-    if st.button("⚙️ Process Raw Inventory Data", type="primary", key="process_raw_btn"):
+    if st.button("⚙️ Process Raw Inventory Data for Manual review.", type="primary", key="process_raw_btn"):
         with st.spinner("Processing initial inventory data splits..."):
             try:
                 df = pd.read_excel(raw_file)
@@ -137,7 +137,8 @@ if raw_file:
 
     # Display results if processing cache is active
     if st.session_state.get('step1_processed', False):
-        st.success("Initial processing complete!")
+        st.success("**Initial processing completed!** Please download both Excel files and review the **Product Type categories, the items under each category, and any items expiring soon**.
+        Once your review is complete, move to **Step 2**. As a best practice, keep the reviewed Excel file open side-by-side with this website so you can easily enter the required numbers.")
         col_dl1, col_dl2 = st.columns(2)
         with col_dl1:
             st.download_button(

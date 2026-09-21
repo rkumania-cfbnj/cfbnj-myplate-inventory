@@ -159,10 +159,10 @@ st.markdown("---")
 # ==========================================
 # STEP 2: CONFIGURATION & REVIEW UPLOAD
 # ==========================================
-st.header("Step 2: Configure Product Type Variety & Total Allocation (lbs) in the fields below. Then upload the manually reviewed Main Inventory Excel file from Step 1 at the bottom of the page.")
-st.info("Review or adjust each Product type variety limits and total allocation lbs by simply entering **number greater then 0 in each box below**. Best Practice is to **open excel side by side** to this website so you can see number of items in each product type")
+st.header("Step 2: Configure Products Variety & Total Allocation (lbs) in the fields below, and then upload the manually reviewed Main Inventory Excel file from Step 1 at the bottom of the page.")
+st.info("Review or adjust each Product type variety limits and total allocation lbs by simply entering **number greater then 0 in each box below** or use the + / - buttons. Best Practice is to **open excel side by side** to this website so you can see number of items in each product type")
 
-st.subheader("A. Set the number of item varieties you want for each Product Type. Enter the number directly or use the + / − buttons")
+st.subheader("A. Below you can set the number of item varieties for each Product Type")
 
 # Define Default Parameters
 default_limits = {
@@ -199,7 +199,7 @@ user_limits = {}
 col_limits, col_targets = st.columns([2, 1])
 
 with col_limits:
-    st.write("**💡 Important Note: Items expiring within 90 days are automatically added to the variety count. Your number below represents the additional varieties to select, not the final total.**")
+    st.write("**💡 Important Note: Items expiring within 90 days are automatically added to the variety count, enrty below represents the additional varieties to select, not the final total.**")
     st.markdown(
         "Example: You have 6 Cereal items and 1 is tagged as expiring within 90 days in excel file. "
         "SO if you enter 4 variety for Cereal, the final allocation will include 5 Cereal items"

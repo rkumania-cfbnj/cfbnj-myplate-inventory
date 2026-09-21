@@ -8,7 +8,7 @@ import io
 # PAGE CONFIGURATION
 # ==========================================
 st.set_page_config(page_title="Inventory Allocation App", layout="wide")
-st.title("🧡 CFBNJ Monthly Allocation MyPlate Inventory Preparation")
+st.title("🧡 CFBNJ Monthly Allocation MyPlate Inventory Preparation Site")
 
 # ==========================================
 # HELPER FUNCTIONS (SCRIPT 2)
@@ -29,7 +29,7 @@ def remove_duplicates(df, fbc_col, desc_col, qty_col):
 # ==========================================
 # STEP 1: INVENTORY CLEANING
 # ==========================================
-st.header("Step 1: Upload Allocation Plan Excel Extract file from CERES, but please remove headers and footers from the excel")
+st.header("Step 1: Upload Allocation plan excel extract file from CERES, and please remove headers and footers from the excel")
 raw_file = st.file_uploader("Before uploading the Excel please remove the top 2 rows and bottom 2 rows, as they are not part of the requested data. Then upload the Excel file below.", type=["xlsx", "xls"], key="raw_upload")
 
 if raw_file:
@@ -159,10 +159,11 @@ st.markdown("---")
 # ==========================================
 # STEP 2: CONFIGURATION & REVIEW UPLOAD
 # ==========================================
-st.header("Step 2: In the fields below we can configure Product type variety and Total Allocation Lbs, and then Upload Reviewed Main Inventory Excel File at the end of page that we got from Step 1 and manually reviewed it")
-st.info("Review or adjust each Product type variety limits and total allocation lbs by simply entering number greater then 0 in each box below. Best Practice is to open excel side by side to this website so you can see number of items in each product type")
+st.header("Step 2: Configure Product Type Variety & Total Allocation (lbs) in the fields below. Then upload the manually reviewed Main Inventory Excel file from Step 1 at the bottom of the page.
+")
+st.info("Review or adjust each Product type variety limits and total allocation lbs by simply entering **number greater then 0 in each box below**. Best Practice is to **open excel side by side** to this website so you can see number of items in each product type")
 
-st.subheader("1. Set Product Type Variety Limits")
+st.subheader("A. Set Product Type Variety Limits below")
 
 # Define Default Parameters
 default_limits = {
@@ -172,11 +173,11 @@ default_limits = {
     "Dairy: Yogurt, Cheese, Milk, Butter, Sour cream Ice Cream": 1,
     "Fruit:  Canned and Frozen": 5,
     "Juice: 100% Fruit or Vegetable": 1,
-    "Vegetables - Canned & Frozen": 5,
+    "Meat/Fish/Poultry": 5,
     "Protein - Non-Meat: Peanut Butter, Beans, Eggs, Pork & Beans, Nuts": 4,
-    "Meat/Fish/Poultry": 5, 
-    "Spice/Condiment/Sauce: Herbs, Salt, Sugar, Mixes, Vinegar, Extracts, Mustard, Syrup, Gravy, Jelly, Sauces, Salad Oil" : 4,
-    "Rice": 2
+    "Vegetables - Canned & Frozen": 5,
+    "Rice": 2, 
+    "Spice/Condiment/Sauce: Herbs, Salt, Sugar, Mixes, Vinegar, Extracts, Mustard, Syrup, Gravy, Jelly, Sauces, Salad Oil" : 4
 }
 
 base_allocation_map = {
@@ -199,7 +200,7 @@ user_limits = {}
 col_limits, col_targets = st.columns([2, 1])
 
 with col_limits:
-    st.write("**Editable Product Variety Adjustments starts below**")
+    st.write("**Editable Product Variety simply enter number or click + or - on right side**")
     for cat, default_val in default_limits.items():
         short_label = cat.split(':')[0].split('-')[0].strip()
         # All limits are now fully unlocked and editable
@@ -247,7 +248,7 @@ with col_targets:
     }
 
 st.markdown("---")
-st.subheader("2. Set Total Lbs Targeted for Allocation & Then Please uploade Excel File")
+st.subheader("2. Set Total Lbs Targeted for Allocation & then please upload Excel File")
 
 # Dynamic Target Weight Input Field
 final_weight_target = st.number_input(

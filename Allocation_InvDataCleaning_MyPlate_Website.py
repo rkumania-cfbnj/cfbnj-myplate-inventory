@@ -199,7 +199,7 @@ user_limits = {}
 col_limits, col_targets = st.columns([2, 1])
 
 with col_limits:
-    st.write("**💡 Important Note: Items expiring within 90 days are automatically added to the variety count, enrty below represents the additional varieties to select, not the final total.**")
+    st.write("**💡 Important Note:** Items expiring within 90 days are automatically added to the variety count, enrty below represents the additional varieties to select, not the final total.")
     st.markdown(
         "Example: You have 6 Cereal items and 1 is tagged as expiring within 90 days in excel file. "
         "SO if you enter 4 variety for Cereal, the final allocation will include 5 Cereal items"

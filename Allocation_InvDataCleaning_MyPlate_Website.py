@@ -159,8 +159,7 @@ st.markdown("---")
 # ==========================================
 # STEP 2: CONFIGURATION & REVIEW UPLOAD
 # ==========================================
-st.header("Step 2: Configure Product Type Variety & Total Allocation (lbs) in the fields below. Then upload the manually reviewed Main Inventory Excel file from Step 1 at the bottom of the page.
-")
+st.header("Step 2: Configure Product Type Variety & Total Allocation (lbs) in the fields below. Then upload the manually reviewed Main Inventory Excel file from Step 1 at the bottom of the page.")
 st.info("Review or adjust each Product type variety limits and total allocation lbs by simply entering **number greater then 0 in each box below**. Best Practice is to **open excel side by side** to this website so you can see number of items in each product type")
 
 st.subheader("A. Set Product Type Variety Limits below")

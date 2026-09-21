@@ -137,7 +137,7 @@ if raw_file:
 
     # Display results if processing cache is active
     if st.session_state.get('step1_processed', False):
-        st.success("**Initial processing completed!** Please download both Excel files and review the Product Type categories, the items under each category, and **any items tagged as expiring in 90 days**. Once your review is complete, move to **Step 2**. Keep the reviewed Excel file open side-by-side with this website to easily enter the variety limits and total allocation weight.")
+        st.success("**Initial processing completed!** 💡Please download both Excel files and review the Product Type categories, the items under each category, and **any items tagged as expiring in 90 days**. Once your review is complete, move to **Step 2**. Keep the reviewed Excel file open side-by-side with this website to easily enter the variety limits and total allocation weight.")
         col_dl1, col_dl2 = st.columns(2)
         with col_dl1:
             st.download_button(
@@ -203,7 +203,7 @@ with col_limits:
     st.markdown(
         "Example: You have 6 Cereal items and 1 is tagged as expiring within 90 days in excel file. "
         "SO if you enter 4 variety for Cereal, the final allocation will include 5 Cereal items"
-        "Because **4 selected based on entry + 1 automatically included expiring item from excel uploaded below.**"
+        " because **4 were selected based on entry + 1 automatically included expiring item from excel uploaded below.**"
     )
     for cat, default_val in default_limits.items():
         short_label = cat.split(':')[0].split('-')[0].strip()

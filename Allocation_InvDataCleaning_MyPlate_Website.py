@@ -8,7 +8,7 @@ import io
 # PAGE CONFIGURATION
 # ==========================================
 st.set_page_config(page_title="Inventory Allocation App", layout="wide")
-st.title("🧡 CFBNJ Inventory & MyPlate Set Up")
+st.title("🧡 CFBNJ Monthly Allocation MyPlate Inventory Preparation")
 
 # ==========================================
 # HELPER FUNCTIONS (SCRIPT 2)
@@ -29,8 +29,9 @@ def remove_duplicates(df, fbc_col, desc_col, qty_col):
 # ==========================================
 # STEP 1: INVENTORY CLEANING
 # ==========================================
-st.header("Step 1: Upload Raw Ceres Inventory, PLEASE remove headers and footers from ceres excel file")
-raw_file = st.file_uploader("Upload the raw master inventory file (Excel)", type=["xlsx", "xls"], key="raw_upload")
+st.header("Step 1: Upload Allocation Plan Excel Extract file from CERES, but please remove headers and footers from the excel")
+raw_file = st.file_uploader("Before uploading the Excel please remove the "top 2 rows and bottom 2 rows", as they are not part of the requested data. Then upload the Excel file below.
+", type=["xlsx", "xls"], key="raw_upload")
 
 if raw_file:
     # Reset processing state if a brand new file is uploaded
@@ -40,18 +41,18 @@ if raw_file:
         st.session_state['buffer_main'] = None
         st.session_state['buffer_soup'] = None
 
-    st.subheader("📁 Name Your Processed Files")
+    st.subheader("📁 Name Your Processed Excel Files")
     col_name1, col_name2 = st.columns(2)
     
     with col_name1:
         custom_main_name = st.text_input(
-            "Main Review Inventory Filename:", 
+            "Main Review Inventory Excel Filename:", 
             value="MAY_REVIEW_Inventory",
             help="Type your preferred name for the main review file (Extension will be added automatically)"
         )
     with col_name2:
         custom_soup_name = st.text_input(
-            "Soup Kitchen Inventory Filename:", 
+            "Soup Kitchen Review Inventory Excel Filename:", 
             value="MAY_SoupKitchen_Inventory",
             help="Type your preferred name for the soup kitchen file (Extension will be added automatically)"
         )
@@ -63,7 +64,7 @@ if raw_file:
         custom_soup_name += ".xlsx"
 
     # Action button to trigger processing explicitly
-    if st.button("⚙️ Process Raw Inventory", type="primary", key="process_raw_btn"):
+    if st.button("⚙️ Process Raw Inventory Data", type="primary", key="process_raw_btn"):
         with st.spinner("Processing initial inventory data splits..."):
             try:
                 df = pd.read_excel(raw_file)
@@ -96,7 +97,7 @@ if raw_file:
                     df['Expiration Status'] = ''
                     
                     expiring_soon_mask = (df['Expires'].notna() & (df['Expires'] <= two_weeks_from_today))
-                    df.loc[expiring_soon_mask, 'Expiration Status'] = 'Expiring Soon'
+                    df.loc[expiring_soon_mask, 'Expiration Status'] = 'Expiring in next 90 Days'
                 else:
                     df['Expiration Status'] = ''
                     expiring_soon_mask = pd.Series([False]*len(df), index=df.index)
@@ -159,10 +160,10 @@ st.markdown("---")
 # ==========================================
 # STEP 2: CONFIGURATION & REVIEW UPLOAD
 # ==========================================
-st.header("Step 2: Configure Allocation Parameters & Upload Reviewed Inventory")
-st.info("Review or adjust your variety limits and total pound goal below first, then upload your verified Main Inventory file.")
+st.header("Step 2: In the fields below we can configure Product type variety and Total Allocation Lbs, and then Upload Reviewed Main Inventory Excel File at the end of page that we got from Step 1 and manually reviewed it")
+st.info("Review or adjust each Product type variety limits and total allocation lbs by simply entering number greater then 0 in each box below. Best Practice is to open excel side by side to this website so you can see number of items in each product type")
 
-st.subheader("1. Set Global Targets & Variety Limits")
+st.subheader("1. Set Product Type Variety Limits")
 
 # Define Default Parameters
 default_limits = {
@@ -199,7 +200,7 @@ user_limits = {}
 col_limits, col_targets = st.columns([2, 1])
 
 with col_limits:
-    st.write("**Editable Variety Adjustments**")
+    st.write("**Editable Product Variety Adjustments starts below**")
     for cat, default_val in default_limits.items():
         short_label = cat.split(':')[0].split('-')[0].strip()
         # All limits are now fully unlocked and editable
@@ -214,7 +215,7 @@ with col_limits:
         )
 
 with col_targets:
-    st.write("**MyPlate Target Distributions (Editable)**")
+    st.write("**CFBNJ MyPlate Target Distributions**")
     
     # Initialize editable targets framework inside session state for stability
     if 'target_df_init' not in st.session_state:
@@ -247,7 +248,7 @@ with col_targets:
     }
 
 st.markdown("---")
-st.subheader("2. Define Total Weight Target & Execute File")
+st.subheader("2. Set Total Lbs Targeted for Allocation & Then Please uploade Excel File")
 
 # Dynamic Target Weight Input Field
 final_weight_target = st.number_input(
@@ -269,7 +270,7 @@ if reviewed_file:
         st.session_state['step2_processed'] = False
         st.session_state['buffer_final'] = None
 
-    st.subheader("🌟 Name Your Final Allocation File")
+    st.subheader("🌟 Name Your Final Item Prep Allocation File")
     custom_final_name = st.text_input(
         "Final MyPlate Allocation Filename:",
         value="May_OurPlate_SetUp",
@@ -279,7 +280,7 @@ if reviewed_file:
     if not custom_final_name.endswith(".xlsx"):
         custom_final_name += ".xlsx"
 
-    if st.button("🚀 Run MyPlate Allocation", type="primary"):
+    if st.button("🚀 Run MyPlate Inventory Process", type="primary"):
         with st.spinner("Processing optimization parameters..."):
             try:
                 df_alloc = pd.read_excel(reviewed_file)
@@ -294,7 +295,7 @@ if reviewed_file:
                 MIN_ALLOC_QTY = 825
                 MAX_ALLOC_QTY = 5000
 
-                expiring_items = df_alloc[df_alloc[exp_col].astype(str).str.strip() == "Expiring Soon"].copy()
+                expiring_items = df_alloc[df_alloc[exp_col].astype(str).str.strip() == "Expiring in next 90 Days"].copy()
                 normal_items = df_alloc[~df_alloc.index.isin(expiring_items.index)].copy()
                 normal_items = remove_duplicates(normal_items, fbc_col, desc_col, qty_col)
                 
@@ -379,7 +380,7 @@ if reviewed_file:
     if st.session_state.get('step2_processed', False):
         st.success(f"Allocation Complete! Final Expected Weight: **{st.session_state['final_weight']:,.0f} lbs** (Target: {final_weight_target:,.0f} lbs)")
         st.download_button(
-            label=f"🌟 Download Final Allocation: {st.session_state['saved_final_name']}", 
+            label=f"🌟 Download Final Myplate Inventory for Allocation: {st.session_state['saved_final_name']}", 
             data=st.session_state['buffer_final'], 
             file_name=st.session_state['saved_final_name'], 
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

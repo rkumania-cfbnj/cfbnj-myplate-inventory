@@ -137,8 +137,7 @@ if raw_file:
 
     # Display results if processing cache is active
     if st.session_state.get('step1_processed', False):
-        st.success("**Initial processing completed!** Please download both Excel files and review the **Product Type categories, the items under each category, and any items expiring soon**.
-        Once your review is complete, move to **Step 2**. As a best practice, keep the reviewed Excel file open side-by-side with this website so you can easily enter the required numbers.")
+        st.success("**Initial processing completed!** Please download both Excel files and review the **Product Type categories, the items under each category, and any items expiring soon**. Once your review is complete, move to **Step 2**. As a best practice, keep the reviewed Excel file open side-by-side with this website so you can easily enter the required numbers.")
         col_dl1, col_dl2 = st.columns(2)
         with col_dl1:
             st.download_button(
